@@ -1,53 +1,49 @@
 ﻿using Data.Context;
 using Data.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Data.Repository
 {
     public class CoverTypesRepository : IRepository<CoverType>
     {
-        private readonly BookShopContext context;
 
-        public IEnumerable<CoverType> All => context.CoverTypes.ToList();
+        private readonly BookShopContext context;
 
         public CoverTypesRepository(BookShopContext context)
         {
             this.context = context;
         }
 
-        public void Add(CoverType entity)
+        public async Task AddAsync(CoverType entity)
         {
             context.CoverTypes.Add(entity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
-        public void Delete(CoverType entity)
+        public async Task<IEnumerable<CoverType>> AllAsync()
+        {
+            return await context.CoverTypes.ToListAsync();
+        }
+
+        public async Task DeleteAsync(CoverType entity)
         {
             context.CoverTypes.Remove(entity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
-        public CoverType FindById(int id)
+        public async Task<CoverType> FindByIdAsync(int id)
         {
-            return context.CoverTypes.FirstOrDefault(e => e.Id == id);
+            return await context.CoverTypes.FirstOrDefaultAsync(e => e.Id == id);
         }
 
-        public CoverType FindById(string id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public CoverType FindById(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(CoverType entity)
+        public async Task UpdateAsync(CoverType entity)
         {
             context.CoverTypes.Update(entity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
     }
 }

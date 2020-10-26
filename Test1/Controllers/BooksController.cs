@@ -21,32 +21,39 @@ namespace Test1.Controllers
             db = context;
             if (!db.Books.Any())
             {
-                db.Books.Add(new Book { Name = "Book1", 
+                db.Books.Add(new Book
+                {
+                    Name = "Book1",
                     Author = db.Authors.FirstOrDefault(),
-                    CoverType=db.CoverTypes.FirstOrDefault(), 
-                    Genre=db.Genres.FirstOrDefault(),
+                    CoverType = db.CoverTypes.FirstOrDefault(),
+                    Genre = db.Genres.FirstOrDefault(),
                     AgeCategory = db.AgeCategories.FirstOrDefault(p => p.Min >= 7),
                     Year = 1818,
                 });
                 db.SaveChanges();
-                db.Books.Add(new Book { Name = "Book2", 
+                db.Books.Add(new Book
+                {
+                    Name = "Book2",
                     Author = db.Authors.FirstOrDefault(),
-                    CoverType=db.CoverTypes.FirstOrDefault(), 
-                    Genre=db.Genres.FirstOrDefault(),
+                    CoverType = db.CoverTypes.FirstOrDefault(),
+                    Genre = db.Genres.FirstOrDefault(),
                     AgeCategory = db.AgeCategories.FirstOrDefault(p => p.Min >= 7),
                     Year = 1818,
                 });
                 db.SaveChanges();
-                db.Books.Add(new Book { Name = "Book3", 
+                db.Books.Add(new Book
+                {
+                    Name = "Book3",
                     Author = db.Authors.FirstOrDefault(),
-                    CoverType=db.CoverTypes.FirstOrDefault(), 
-                    Genre=db.Genres.FirstOrDefault(),
+                    CoverType = db.CoverTypes.FirstOrDefault(),
+                    Genre = db.Genres.FirstOrDefault(),
                     AgeCategory = db.AgeCategories.FirstOrDefault(p => p.Min >= 17),
                     Year = 1818,
                 });
                 db.SaveChanges();
-
-                db.Books.Add(new Book { Name = "Book10",
+                db.Books.Add(new Book
+                {
+                    Name = "Book10",
                     Author = db.Authors.FirstOrDefault(p => p.Id == 2),
                     CoverType = db.CoverTypes.FirstOrDefault(p => p.Id == 2),
                     Genre = db.Genres.FirstOrDefault(p => p.Id == 2),
@@ -60,7 +67,7 @@ namespace Test1.Controllers
         public async Task<ActionResult<IEnumerable<Book>>> Get()
         {
             return await db.Books.ToListAsync();
-        }       
+        }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Book>> Get(int id)
@@ -84,26 +91,31 @@ namespace Test1.Controllers
             return Ok(book);
         }
 
-        [HttpPost("{Author}")]
+        [HttpPost("Name")]
+        public async Task<ActionResult<IEnumerable<Book>>> Post([FromBody] string name)
+        {
+            return await db.Books.Where(p => p.Name.Contains(name)).ToListAsync();
+        }
+        [HttpPost("Author")]
         public async Task<ActionResult<IEnumerable<Book>>> Post([FromBody] Author author)
         {
             return await db.Books.Where(p => p.Author.Id == author.Id).ToListAsync();
         }
 
-        [HttpPost("{CoverType}")]
-        public async Task<ActionResult<IEnumerable<Book>>> Post([FromBody] CoverType coverType )
+        [HttpPost("CoverType")]
+        public async Task<ActionResult<IEnumerable<Book>>> Post([FromBody] CoverType coverType)
         {
             return await db.Books.Where(p => p.CoverType.Id == coverType.Id).ToListAsync();
         }
-
-        [HttpPost("{Genre}")]
-        public async Task<ActionResult<IEnumerable<Book>>> Post([FromBody] Genre genre  )
+        [HttpPost("Genre")]
+        public async Task<ActionResult<IEnumerable<Book>>> Post([FromBody] Genre genre)
         {
-            return await db.Books.Where(p => p.Genre.Id == genre.Id).ToListAsync();
+            return await db.Books.Where(p => p.Genre.Id == genre.Id)
+                .ToListAsync();
         }
 
-        [HttpPost("{AgeCategory}")]
-        public async Task<ActionResult<IEnumerable<Book>>> Post([FromBody] AgeCategory ageCategory )
+        [HttpPost("AgeCategory")]
+        public async Task<ActionResult<IEnumerable<Book>>> Post([FromBody] AgeCategory ageCategory)
         {
             return await db.Books.Where(p => p.AgeCategory.Id == ageCategory.Id).ToListAsync();
         }
@@ -128,7 +140,7 @@ namespace Test1.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Book>> Delete(int id)
         {
-            Book book  = db.Books.FirstOrDefault(x => x.Id == id);
+            Book book = db.Books.FirstOrDefault(x => x.Id == id);
             if (book == null)
             {
                 return NotFound();

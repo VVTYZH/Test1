@@ -1,16 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using Data.Models;
+using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Data.Repository
 {
     public interface IRepository<TEntity> where TEntity : class
     {
-        IEnumerable<TEntity> All { get; }
-        void Add(TEntity entity);
-        void Delete(TEntity entity);
-        void Update(TEntity entity);
+        Task<IEnumerable<TEntity>> AllAsync();
+        Task AddAsync(TEntity entity);
+        Task DeleteAsync(TEntity entity);
+        Task UpdateAsync(TEntity entity);
 
-        TEntity FindById(int id);
-        TEntity FindById(string id);
+        Task<TEntity> FindByIdAsync(int id);
     }
 }

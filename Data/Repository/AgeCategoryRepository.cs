@@ -1,8 +1,10 @@
 ﻿using Data.Context;
 using Data.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Data.Repository
 {
@@ -10,44 +12,37 @@ namespace Data.Repository
     {
         private readonly BookShopContext context;
 
-        public IEnumerable<AgeCategory> All => context.AgeCategories.ToList();
-
         public AgeCategoryRepository(BookShopContext context)
         {
             this.context = context;
         }
 
-        public void Add(AgeCategory entity)
+        public async Task AddAsync(AgeCategory entity)
         {
             context.AgeCategories.Add(entity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
-        public void Delete(AgeCategory entity)
+        public async Task<IEnumerable<AgeCategory>> AllAsync()
+        {
+            return await context.AgeCategories.ToListAsync();
+        }
+
+        public async Task DeleteAsync(AgeCategory entity)
         {
             context.AgeCategories.Remove(entity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
-        public AgeCategory FindById(int id)
+        public async Task<AgeCategory> FindByIdAsync(int id)
         {
-            return context.AgeCategories.FirstOrDefault(e => e.Id == id);
+            return await context.AgeCategories.FirstOrDefaultAsync(e => e.Id == id);
         }
 
-        public AgeCategory FindById(string id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public AgeCategory FindById(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(AgeCategory entity)
+        public async Task UpdateAsync(AgeCategory entity)
         {
             context.AgeCategories.Update(entity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
     }
 }

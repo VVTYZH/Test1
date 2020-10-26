@@ -1,53 +1,49 @@
 ﻿using Data.Context;
 using Data.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Data.Repository
 {
     public class GenresRepository : IRepository<Genre>
     {
-        private readonly BookShopContext context;
 
-        public IEnumerable<Genre> All => context.Genres.ToList();
+        private readonly BookShopContext context;
 
         public GenresRepository(BookShopContext context)
         {
             this.context = context;
         }
 
-        public void Add(Genre entity)
+        public async Task AddAsync(Genre entity)
         {
             context.Genres.Add(entity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
-        public void Delete(Genre entity)
+        public async Task<IEnumerable<Genre>> AllAsync()
+        {
+            return await context.Genres.ToListAsync();
+        }
+
+        public async Task DeleteAsync(Genre entity)
         {
             context.Genres.Remove(entity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
-        public Genre FindById(int id)
+        public async Task<Genre> FindByIdAsync(int id)
         {
-            return context.Genres.FirstOrDefault(e => e.Id == id);
+            return await context.Genres.FirstOrDefaultAsync(e => e.Id == id);
         }
 
-        public Genre FindById(string id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Genre FindById(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(Genre entity)
+        public async Task UpdateAsync(Genre entity)
         {
             context.Genres.Update(entity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
     }
 }

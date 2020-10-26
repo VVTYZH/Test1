@@ -15,11 +15,11 @@ namespace Test1
             services.AddControllers();
             services.AddDbContext<BookShopContext>(options => options.UseSqlServer(connectionString));
 
-            //services.AddScoped<IRepository<AgeCategory>, AgeCategoryRepository>();
-            //services.AddScoped<IRepository<Author>, AuthorRepository>();
-            //services.AddScoped<IRepository<Book>, BooksRepository>();
-            //services.AddScoped<IRepository<CoverType>, CoverTypesRepository>();
-            //services.AddScoped<IRepository<Genre>, GenresRepository>();
+            services.AddScoped<IRepository<AgeCategory>, AgeCategoryRepository>();
+            services.AddScoped<IRepository<Author>, AuthorRepository>();
+            services.AddScoped<IRepository<Book>, BooksRepository>();
+            services.AddScoped<IRepository<CoverType>, CoverTypesRepository>();
+            services.AddScoped<IRepository<Genre>, GenresRepository>();
 
             services.AddSwaggerGen(c =>
             {

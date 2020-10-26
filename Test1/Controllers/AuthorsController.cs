@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Data.Context;
 using Data.Models;
+using Data.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,32 +15,28 @@ namespace Test1.Controllers
     [ApiController]
     public class AuthorsController : ControllerBase
     {
-        BookShopContext db;
-        public AuthorsController(BookShopContext context)
+        private IRepository<Author> ContextAuthors { get; set; }
+
+        public AuthorsController(IRepository<Author> contextAuthors)
         {
-            db = context;
+            ContextAuthors = contextAuthors;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Author>>> Get()
         {
-            return await db.Authors.ToListAsync();
+            return Ok(await ContextAuthors.AllAsync());
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Author>> Get(int id)
         {
-            Author author  = await db.Authors.FirstOrDefaultAsync(x => x.Id == id);
+            Author author = await ContextAuthors.FindByIdAsync(id);
             if (author == null)
                 return NotFound();
             return new ObjectResult(author);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="author"></param>
-        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult<Author>> Post(Author author)
         {
@@ -47,38 +44,35 @@ namespace Test1.Controllers
             {
                 return BadRequest();
             }
-            db.Authors.Add(author);
-            await db.SaveChangesAsync();
+            await ContextAuthors.AddAsync(author);
             return Ok(author);
         }
 
         [HttpPut]
         public async Task<ActionResult<Author>> Put(Author author)
         {
-            if (author == null)
+            if (author == null || author?.Id is null)
             {
                 return BadRequest();
             }
-            if (!db.Authors.Any(x => x.Id == author.Id))
+            if (!(await ContextAuthors.FindByIdAsync(author.Id) == null))
             {
                 return NotFound();
             }
 
-            db.Update(author);
-            await db.SaveChangesAsync();
+            await ContextAuthors.UpdateAsync(author);
             return Ok(author);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<Author>> Delete(int id)
         {
-            Author author = db.Authors.FirstOrDefault(x => x.Id == id);
+            Author author = await ContextAuthors.FindByIdAsync(id);
             if (author == null)
             {
                 return NotFound();
             }
-            db.Authors.Remove(author);
-            await db.SaveChangesAsync();
+            await ContextAuthors.DeleteAsync(author);
             return Ok(author);
         }
     }

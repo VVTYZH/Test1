@@ -1,8 +1,10 @@
 ﻿using Data.Context;
 using Data.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Data.Repository
 {
@@ -10,44 +12,37 @@ namespace Data.Repository
     {
         private readonly BookShopContext context;
 
-        public IEnumerable<Author> All => context.Authors.ToList();
-
         public AuthorRepository(BookShopContext context)
         {
             this.context = context;
         }
 
-        public void Add(Author entity)
+        public async Task AddAsync(Author entity)
         {
             context.Authors.Add(entity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
-        public void Delete(Author entity)
+        public async Task<IEnumerable<Author>> AllAsync()
+        {
+            return await context.Authors.ToListAsync();
+        }
+
+        public async Task DeleteAsync(Author entity)
         {
             context.Authors.Remove(entity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
 
-        public Author FindById(int id)
+        public async Task<Author> FindByIdAsync(int id)
         {
-            return context.Authors.FirstOrDefault(e => e.Id == id);
+            return await context.Authors.FirstOrDefaultAsync(e => e.Id == id);
         }
 
-        public Author FindById(string id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Author FindById(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Update(Author entity)
+        public async Task UpdateAsync(Author entity)
         {
             context.Authors.Update(entity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
     }
 }
