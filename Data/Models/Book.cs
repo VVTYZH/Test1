@@ -27,13 +27,4 @@ namespace Data.Models
         public int GenreId { get; set; }
         public virtual Genre Genre { get; set; }
     }
-    public class BookPostParams
-    {
-        public int FromYear { get; set; }
-        public int ToYear { get; set; }
-        public virtual Author Author { get; set; }
-        public virtual AgeCategory AgeCategory { get; set; }
-        public virtual CoverType CoverType { get; set; }
-        public virtual Genre Genre { get; set; }
-    }
 }

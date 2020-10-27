@@ -30,7 +30,6 @@ namespace Test1.Controllers
                     AgeCategory = db.AgeCategories.FirstOrDefault(p => p.Min >= 7),
                     Year = 1818,
                 });
-                db.SaveChanges();
                 db.Books.Add(new Book
                 {
                     Name = "Book2",
@@ -40,7 +39,6 @@ namespace Test1.Controllers
                     AgeCategory = db.AgeCategories.FirstOrDefault(p => p.Min >= 7),
                     Year = 1818,
                 });
-                db.SaveChanges();
                 db.Books.Add(new Book
                 {
                     Name = "Book3",
@@ -50,7 +48,6 @@ namespace Test1.Controllers
                     AgeCategory = db.AgeCategories.FirstOrDefault(p => p.Min >= 17),
                     Year = 1818,
                 });
-                db.SaveChanges();
                 db.Books.Add(new Book
                 {
                     Name = "Book10",
@@ -102,22 +99,17 @@ namespace Test1.Controllers
             return await db.Books.Where(p => p.Author.Id == author.Id).ToListAsync();
         }
 
-        [HttpPost("CoverType")]
-        public async Task<ActionResult<IEnumerable<Book>>> Post([FromBody] CoverType coverType)
+        [HttpPost("Filter")]
+        public async Task<ActionResult<IEnumerable<Book>>> Post([FromBody] BookPostFilterParams bookPostFilterParams)
         {
-            return await db.Books.Where(p => p.CoverType.Id == coverType.Id).ToListAsync();
-        }
-        [HttpPost("Genre")]
-        public async Task<ActionResult<IEnumerable<Book>>> Post([FromBody] Genre genre)
-        {
-            return await db.Books.Where(p => p.Genre.Id == genre.Id)
-                .ToListAsync();
-        }
-
-        [HttpPost("AgeCategory")]
-        public async Task<ActionResult<IEnumerable<Book>>> Post([FromBody] AgeCategory ageCategory)
-        {
-            return await db.Books.Where(p => p.AgeCategory.Id == ageCategory.Id).ToListAsync();
+            return await db.Books.Where(p => (
+            (bookPostFilterParams.FromYear == null||p.Year >= bookPostFilterParams.FromYear) &&
+            (bookPostFilterParams.ToYear == null||p.Year <= bookPostFilterParams.ToYear) &&
+            (bookPostFilterParams.CoverType == null||p.CoverType.Id == bookPostFilterParams.CoverType.Id) &&
+            (bookPostFilterParams.AgeCategory == null||p.CoverType.Id == bookPostFilterParams.AgeCategory.Id) &&
+            (bookPostFilterParams.Genre == null||p.CoverType.Id == bookPostFilterParams.Genre.Id) &&
+            (bookPostFilterParams.Author == null || p.CoverType.Id == bookPostFilterParams.Author.Id) )
+            ).ToListAsync();
         }
 
         [HttpPut]
